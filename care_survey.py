@@ -111,7 +111,7 @@ def wrap_title(text, width=35):
         lines.append(" ".join(line))
     return "<br>".join(lines)
 
-LABEL_MARGIN = 160  # fixed left margin for y-axis labels
+LABEL_MARGIN = 5  # automargin handles label width
 
 # ── Section colors (base hex) ──────────────────────────────────────────────────
 SECTION_COLORS = {
@@ -264,7 +264,7 @@ def make_figure(question, respondent_ids=None, selected_answer=None,
     fig.update_layout(
         margin=dict(l=LABEL_MARGIN, r=90, t=10, b=5),
         xaxis=dict(showgrid=False, visible=False, range=[0, counts["count"].max() * 1.4]),
-        yaxis=dict(tickfont=dict(size=10), automargin=False),
+        yaxis=dict(tickfont=dict(size=10), automargin=True),
         plot_bgcolor="white",
         paper_bgcolor="white",
         height=max(180, n * row_h + 40),
