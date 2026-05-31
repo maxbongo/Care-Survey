@@ -235,7 +235,7 @@ def make_figure(question, respondent_ids=None, selected_answer=None, precomputed
 
 # ── App layout ─────────────────────────────────────────────────────────────────
 app = Dash(__name__, suppress_callback_exceptions=True)
-
+server = app.server
 app.index_string = '''
 <!DOCTYPE html>
 <html>
