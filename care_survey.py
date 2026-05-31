@@ -244,9 +244,9 @@ def make_figure(question, respondent_ids=None, selected_answer=None,
     pcts = (counts["count"] / total * 100).round(1)
     bar_text = [f"  {c} ({p}%)" for c, p in zip(counts["count"], pcts)]
 
-    # Row height accounts for wrapped label lines
+    # Row height: base 38px + 16px per extra wrapped line
     max_lines = max((lbl.count("<br>") + 1) for lbl in wrapped_labels) if wrapped_labels else 1
-    row_h = max(30, 18 * max_lines + 10)
+    row_h = 38 + (max_lines - 1) * 16
 
     fig = go.Figure(go.Bar(
         x=counts["count"],
@@ -267,7 +267,7 @@ def make_figure(question, respondent_ids=None, selected_answer=None,
         yaxis=dict(tickfont=dict(size=10), automargin=True),
         plot_bgcolor="white",
         paper_bgcolor="white",
-        height=max(180, n * row_h + 40),
+        height=max(220, n * row_h + 60),
         showlegend=False,
         hoverlabel=dict(bgcolor="#333", font=dict(color="white", size=12), bordercolor="#333"),
     )
@@ -285,23 +285,18 @@ app.index_string = '''
 <style>
 .info-tooltip { position: relative; display: inline-block; cursor: default; }
 .info-tooltip .tooltip-text {
-    visibility: hidden;
-    opacity: 0;
-    width: 280px;
-    background: #333;
-    color: #fff;
-    font-size: 12px;
-    line-height: 1.5;
-    border-radius: 6px;
-    padding: 8px 12px;
-    position: absolute;
-    top: 28px;
-    right: 0;
-    z-index: 999;
-    transition: opacity 0.2s;
-    pointer-events: none;
+    visibility: hidden; opacity: 0;
+    width: 280px; background: #333; color: #fff;
+    font-size: 12px; line-height: 1.5; border-radius: 6px;
+    padding: 8px 12px; position: absolute; top: 28px; right: 0;
+    z-index: 999; transition: opacity 0.2s; pointer-events: none;
 }
 .info-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+.charts-grid { display: grid; gap: 16px; grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1200px) { .charts-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 900px)  { .charts-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .charts-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>{%app_entry%}<footer>{%config%}{%scripts%}{%renderer%}</footer></body>
@@ -428,11 +423,7 @@ def render_charts(filter_state):
                 "paddingLeft": 10,
                 "marginBottom": 12,
             }),
-            html.Div(cards, style={
-                "display": "grid",
-                "gridTemplateColumns": "repeat(4, 1fr)",
-                "gap": "16px",
-            }),
+            html.Div(cards, className="charts-grid"),
         ], style={"marginTop": 36}))
 
     return sections
